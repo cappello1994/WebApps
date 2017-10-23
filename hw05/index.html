@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+</head>
+<body>
+
+<input id="upload" type="file">
+<button onclick="processUpload()">Upload</button>
+
+<div id="total"></div>
+
+<div class="main-wrapper">
+    <h2>Add Contact</h2>
+    <div class="insert-contact">
+        <input type="text" id="nameTextField" placeholder="Name">
+        <input type="number" id="phonenumberTextField" placeholder="Phone Number">
+        <input type="number" id="ageTextField" placeholder="Age">
+        <button name="submit" onclick="addFriend()">Add</button>
+    </div>
+</div>
+<table id="allTable">
+    <tr>
+        <td>Name</td>
+        <td>Phone</td>
+        <td>Age</td>
+    </tr>
+</table>
+
+</body>
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/4.5.2/firebase.js"></script>
+
+
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyB16_yBOwdcd3cS9I6AwFv4TiYiMAxnD4U",
+        authDomain: "hw05-f96dd.firebaseapp.com",
+        databaseURL: "https://hw05-f96dd.firebaseio.com",
+        projectId: "hw05-f96dd",
+        storageBucket: "",
+        messagingSenderId: "861063200106"
+    };
+    firebase.initializeApp(config);
+</script>
+
+<script>
+    function processUpload() {
+        var uploadInfo = document.getElementById("upload");
+        var rootRef = firebase.database().ref();
+        var storesRef = rootRef.child('friends');
+
+
+        if ("files" in uploadInfo) {
+            var reader = new FileReader();
+            reader.onload = function(event) {
+                var jsonObj = JSON.parse (event.target.result);
+                for(var i =0; i<jsonObj.length;i++){
+                    let newStoreRef = storesRef.push();
+                    newStoreRef.set({
+                        name: jsonObj[i].name,
+                        "phone": jsonObj[i].phone,
+                        "age": jsonObj[i].age
+                    });
+
+                }
+                document.getElementById('total').innerHTML ="Items Added: " + jsonObj.length;
+            };
+
+            /* file is an array and we are interested only in the first element */
+            reader.readAsText(uploadInfo.files[0]);
+        }
+    }
+
+
+
+</script>
+
+<script>
+function addFriend(){
+    var rootRef = firebase.database().ref();
+    var storesRef = rootRef.child('friends');
+    var friendName = document.getElementById("nameTextField").value;
+    var friendAge = document.getElementById("ageTextField").value;
+    var friendPhoneNumber = document.getElementById("phonenumberTextField").value;
+    let newStoreRef = storesRef.push();
+    newStoreRef.set({
+        name: friendName,
+        "phone": friendPhoneNumber,
+        "age": friendAge
+    });
+}
+</script>
+
+<script>
+    let ref = firebase.database().ref("friends");
+    // Attach a listener to read the data at our posts reference
+            ref.on('value', function (snapshot) {
+
+                document.getElementById('allTable').innerHTML ="<tr><td>Name</td><td>Phone</td><td>Age</td></tr>";
+                snapshot.forEach(function (childSnapshot) {
+
+                    let nameVal = childSnapshot.child("name").val();
+                    let nameTD = "<td>" + nameVal + "</td>";
+                    let phoneVal = childSnapshot.child("phone").val();
+                    let strPN;
+                    if(phoneVal.length==10){
+                        let areaCode = phoneVal.substr(0,3);
+                        let firstDig = phoneVal.substr(3,3);
+                        let lastDig = phoneVal.substr(6);
+                        strPN = "("+areaCode+")"+firstDig+"-"+lastDig;
+                    }else{
+                        let firstDig = phoneVal.substr(0,3);
+                        let lastDig = phoneVal.substr(3);
+                        strPN = firstDig+"-"+lastDig;
+                    }
+
+                    let phoneTD = "<td>" + strPN + "</td>";
+                    let ageVal = childSnapshot.child("age").val();
+                    let ageTD = "<td>" + ageVal + "</td>";
+                    document.getElementById('allTable').innerHTML += "<tr>" + nameTD + phoneTD + ageTD + "</tr>";
+                });
+            });
+
+</script>
+
+</html>
