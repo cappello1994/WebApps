@@ -1,0 +1,7 @@
+{
+  "name": "hw07app",
+  "short_name": "hw07app",
+  "description": "this is an assignment for my web apps class",
+  "start_url": "/",
+  "display": "standalone"
+}

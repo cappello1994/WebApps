@@ -1,0 +1,125 @@
+
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="bower_components/iron-list/iron-list.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="bower_components/paper-card/paper-card.html">
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="bower_components/paper-button/paper-button.html">
+<link rel="import" href="bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="my-main">
+    <template>
+        <style include="iron-flex iron-flex-alignment"></style>
+        <style>
+            :host {
+                display: block;
+            }
+
+            iron-list{
+                width: 60vw;
+                height: 50vh;
+            }
+            paper-card{
+                width: 100%;
+                background-color: #7baaf7;
+            }
+
+            #pcpadding{
+                padding-bottom: 8px;
+            }
+
+        </style>
+        <h2>Hello [[prop1]]!</h2>
+        <firebase-app id="myFireApp"
+                      api-key="AIzaSyB16_yBOwdcd3cS9I6AwFv4TiYiMAxnD4U"
+                      auth-domain="hw05-f96dd.firebaseapp.com"
+                      database-url="https://hw05-f96dd.firebaseio.com"
+                      storage-bucket="hw05-f96dd.appspot.com"
+                      messaging-sender-id="861063200106"></firebase-app>
+        <firebase-query path="/friends" data="{{qryData}}"></firebase-query>
+
+        <paper-dialog id="newFriend" on-iron-overlay-closed="diaClosed">
+            <h2>form</h2>
+            <paper-input id="friendname" label="name"></paper-input>
+            <paper-input id="friendage" label="age"></paper-input>
+            <paper-input id="friendphone" label="phone"></paper-input>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button dialog-confirm>Add</paper-button>
+            </div>
+        </paper-dialog>
+
+        <paper-button on-click="openDialog">Add Friend</paper-button>
+
+        <iron-list items="[[qryData]]">
+            <template>
+                <div id="pcpadding">
+                    <content>
+                        <paper-card>
+                            <div class="layout horizontal">
+                                <div class="layout vertical">
+                                    <div> name: [[item.name]]</div>
+                                    <div>phone: [[item.phone]]</div>
+                                </div>
+                                <div> age: [[item.age]]</div>
+                            </div>
+                            <div class="card-actions">
+                                <iron-icon on-tap= "removeFriend" src="pic.png"></iron-icon>
+                            </div>
+                        </paper-card>
+                    </content>
+                </div>
+            </template>
+        </iron-list>
+
+
+    </template>
+
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class MyMain extends Polymer.Element {
+            static get is() { return 'my-main'; }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'my-main'
+                    }
+                };
+            }
+            diaClosed(){
+                if (this.$.newFriend.closingReason.confirmed) {
+                    var dbRef = this.$.myFireApp.app.database();
+                    dbRef.ref('/friends/').push().set({
+                        name: this.$.friendname.value,
+                        age: this.$.friendage.value,
+                        phone: this.$.friendphone.value
+                    })
+                }
+            }
+            removeFriend(){
+                var dbRef = this.$.myFireApp.app.database().ref('friends');
+                console.log(this.$.friendname.value);
+                var query = dbRef.orderByChild('friendname').equalTo(this.$.friendname.value);
+                query.on('child_added', function(snapshot) {
+                    snapshot.ref.remove();
+                })
+            }
+            openDialog() {
+                this.$.newFriend.open();
+            }
+        }
+
+        window.customElements.define(MyMain.is, MyMain);
+    </script>
+</dom-module>

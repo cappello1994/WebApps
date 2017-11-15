@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    <script>
+        function dothis(){
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function (e) {
+                if (xhr.status === 200) {
+                    var json = JSON.parse(xhr.responseText);
+                    console.log("Result", json);
+                }
+            };
+            var baseurl = "https://openapi.etsy.com/v2/";
+            var dimensions = "etsystore";
+            var apiKey = "4m8hu1gvzullgdkego2np4n6";
+            var url = `${baseurl}users/${dimensions}?&appid=${apiKey}`; // use backquotes
+            xhr.open("GET", // HTTP method
+                url, // target URL
+                true); // asynchronous
+            xhr.send(); // async send, the response will be handled by “onload”
+        }
+    </script>-->
+</head>
+<body>
+<input type="text" name="l1">
+<input type="text" name="l2">
+<input type="text" name="l3">
+<input type="text" name="l4">
+<button onclick="dothis()"></button>
+
+</body>
+</html>
