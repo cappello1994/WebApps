@@ -1,0 +1,17 @@
+{
+  "name": "hw08",
+  "version": "1.0.0",
+  "description": "hw08 in web apps",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "redux": "^3.7.2"
+  }
+}

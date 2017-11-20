@@ -1,0 +1,7 @@
+{
+  "name": "energym",
+  "short_name": "energym",
+  "description": "this is a web app for gvsu cis 371 semester project",
+  "start_url": "/",
+  "display": "standalone"
+}

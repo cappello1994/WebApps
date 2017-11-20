@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="my-login.html">
+<link rel="import" href="my-profile.html">
+<dom-module id="energym-main">
+    <template>
+        <firebase-app
+                auth-domain="energym-f3107.firebaseapp.com"
+                database-url="https://energym-f3107.firebaseio.com"
+                api-key="AIzaSyAba7Ope6qbexf5lAeFAXVNISpX3ftymz0"
+                storage-bucket="energym-f3107.appspot.com"
+                messaging-sender-id="991940411053">
+        </firebase-app>
+        <my-login></my-login>
+        <my-profile></my-profile>
+    </template>
+
+    <script>
+        /**
+         * @customElement
+         * @polymer
+         */
+        class EnergymMain extends Polymer.Element {
+            static get is() { return 'energym-main'; }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'energym-main'
+                    }
+                };
+            }
+        }
+
+        window.customElements.define(EnergymMain.is, EnergymMain);
+    </script>
+</dom-module>

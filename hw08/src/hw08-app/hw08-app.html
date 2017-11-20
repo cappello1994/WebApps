@@ -1,0 +1,87 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="redux-mixin.html">
+
+<dom-module id="hw08-app">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <firebase-app id="myFireApp"
+                      api-key="AIzaSyB16_yBOwdcd3cS9I6AwFv4TiYiMAxnD4U"
+                      auth-domain="hw05-f96dd.firebaseapp.com"
+                      database-url="https://hw05-f96dd.firebaseio.com"
+                      storage-bucket="hw05-f96dd.appspot.com"
+                      messaging-sender-id="861063200106"></firebase-app>
+        <firebase-query path="/friends" data="{{qryData}}"></firebase-query>
+        <paper-card>
+            <h1>[[friendname]] [[friendage]]</h1>
+            <h2>[[friendphone]]</h2>
+        </paper-card>
+        
+        <iron-list items = "[[qryData]]" selected-item="{{selectedItem}}" selection-enabled>
+            <template>
+                <div id="pcpadding">
+                    <div> name: [[item.name]]</div>
+                </div>
+            </template>
+        </iron-list>
+    </template>
+
+    <script>
+
+        class friendelement extends HTMLElement {
+            constructor() {
+                super(); /* call the super class constructor */
+                this.attachShadow ({mode:'open'});
+            }
+        }
+
+        window.customElements.define ('friend-element', friendelement);
+        /**
+         * @customElement
+         * @polymer
+         */
+        class Hw08App extends ReduxMixin(Polymer.Element) {
+            static get is() { return 'hw08-app'; }
+            static get behaviors(){ return ReduxMixin; }
+            static get properties() {
+                return {
+                    prop1: {
+                        type: String,
+                        value: 'hw08-app'
+                    },
+                    selectedItem:{
+                        type: Object,
+                        observer: "_userUpdated"
+                    },
+                    friendname:{
+                        type: Object,
+                        statePath: 'name'
+                    },
+                    friendage:{
+                        type: Object,
+                        statePath: 'age'
+                    },
+                    friendphone:{
+                        type: Object,
+                        statePath: 'phone'
+                    }
+                };
+            }
+
+            _userUpdated(newValue){
+                if(newValue !== null) {
+                    store.dispatch({type: "update", payload: newValue})
+                }
+            }
+        }
+
+        window.customElements.define(Hw08App.is, Hw08App);
+    </script>
+</dom-module>

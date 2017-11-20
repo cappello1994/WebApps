@@ -1,0 +1,54 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth-script.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+
+<dom-module id="my-profile">
+    <template>
+        <firebase-auth user="{{user}}"></firebase-auth>
+        <firebase-query
+                id="query"
+                path="/users/[[user.uid]]/profile"
+                data="{{profile}}">
+        </firebase-query>
+
+        <div id="card">
+            <div id="profile">
+                <ul id="profile-info">
+                    <template items="[[profile]]" as="persondata">
+                        <li>
+                            <p class="content">[[persondata.weight]]</p>
+                        </li>
+                        <paper-input id="input" label="Weight:" value="[[persondata.weight]]"></paper-input>
+                        <div id="weight-controls">
+                            <paper-button id="add" on-tap="addWeight">Add</paper-button>
+                        </div>
+                    </template>
+                </ul>
+
+
+            </div>
+        </div>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'my-profile',
+            properties:{
+                profile:{
+                    type: Object
+                }
+            },
+            addWeight: function(){
+                this.$.query.ref.push({
+                    weight: this.$.input.value
+                })
+            }
+        });
+    </script>
+</dom-module>
